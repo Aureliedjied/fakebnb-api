@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PropertyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Address;
@@ -26,6 +28,17 @@ class Property
 
     #[ORM\OneToOne(mappedBy: 'property', cascade: ['persist', 'remove'])]
     private ?Address $location = null;
+
+    /**
+     * @var Collection<int, Amenity>
+     */
+    #[ORM\ManyToMany(targetEntity: Amenity::class, mappedBy: 'Property')]
+    private Collection $amenities;
+
+    public function __construct()
+    {
+        $this->amenities = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -81,6 +94,33 @@ class Property
         }
 
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amenity>
+     */
+    public function getAmenities(): Collection
+    {
+        return $this->amenities;
+    }
+
+    public function addAmenity(Amenity $amenity): static
+    {
+        if (!$this->amenities->contains($amenity)) {
+            $this->amenities->add($amenity);
+            $amenity->addProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmenity(Amenity $amenity): static
+    {
+        if ($this->amenities->removeElement($amenity)) {
+            $amenity->removeProperty($this);
+        }
 
         return $this;
     }
