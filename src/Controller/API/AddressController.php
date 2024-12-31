@@ -30,6 +30,6 @@ class AddressController extends AbstractController
             ];
         }
 
-        return new JsonResponse($addressData);
+        return $this->json($addressData);
     }
 }

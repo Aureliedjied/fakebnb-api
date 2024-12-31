@@ -16,28 +16,23 @@ class AmenityRepository extends ServiceEntityRepository
         parent::__construct($registry, Amenity::class);
     }
 
-    //    /**
-    //     * @return Amenity[] Returns an array of Amenity objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Finds and returns the amenities associated with a given property ID.
+     *
+     * This method creates a query builder to select the names of amenities
+     * associated with a property identified by the provided property ID.
+     *
+     * @param int $propertyId The ID of the property for which to find amenities.
+     * @return array The list of amenities associated with the property.
+     */
+    public function findAmenitiesByPropertyId(int $propertyId)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('a.name')
+            ->join('p.amenities', 'a')
+            ->where('p.id = :id')
+            ->setParameter('id', $propertyId);
 
-    //    public function findOneBySomeField($value): ?Amenity
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $qb->getQuery()->getResult();
+    }
 }

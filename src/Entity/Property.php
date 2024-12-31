@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\PropertyRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Address;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Address;
+use App\Repository\PropertyRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 class Property
@@ -15,15 +16,19 @@ class Property
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups (['property'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups (['property'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups (['property'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups (['property'])]
     private ?int $pricePerNight = null;
 
     #[ORM\OneToOne(mappedBy: 'property', cascade: ['persist', 'remove'])]

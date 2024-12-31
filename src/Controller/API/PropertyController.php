@@ -2,11 +2,11 @@
 
 namespace App\Controller\API;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PropertyRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PropertyController
+class PropertyController extends AbstractController
 {
     private $propertyRepository;
 
@@ -15,24 +15,20 @@ class PropertyController
         $this->propertyRepository = $propertyRepository;
     }
 
-    #[route('/api/properties/{id}', methods: ['GET'])]
-    public function getProperty(int $id): JsonResponse
-    {
-        $property = $this->propertyRepository->find($id);
-        return new JsonResponse($property);
-    }
-
     #[Route('/api/properties', methods: ['GET'])]
-    public function getProperties(): JsonResponse
+    public function getProperties(PropertyRepository $propertyRepository) 
     {
-        $properties = $this->propertyRepository->findAll();
-        return new JsonResponse($properties);
+        $properties = $propertyRepository->findAll(); 
+        return $this->json($properties, 200, [], [
+            'groups' => 'property']);
     }
 
-    #[Route('/api/properties/{id}/amenities', methods: ['GET'])]
-    public function getAmenities(int $id): JsonResponse
+    #[Route('/api/properties/{id}', methods: ['GET'])]
+    public function getProperty(int $id, PropertyRepository $propertyRepository) 
     {
-        $amenities = $this->propertyRepository->findAmenitiesByPropertyId($id);
-        return new JsonResponse($amenities);
+        $property = $propertyRepository->find($id); 
+        return $this->json($property, 200, [], [
+            'groups' => 'property']);
     }
+
 }

@@ -16,6 +16,13 @@ class PropertyRepository extends ServiceEntityRepository
         parent::__construct($registry, Property::class);
     }
 
+    public function findAll(): array 
+    { 
+        return $this->createQueryBuilder('p') 
+            ->getQuery() 
+            ->getResult();
+    }
+
     /**
      * Finds and returns the amenities associated with a given property ID.
      *
@@ -25,8 +32,6 @@ class PropertyRepository extends ServiceEntityRepository
      * @param int $propertyId The ID of the property for which to find amenities.
      * @return array The list of amenities associated with the property.
      */
-
-    
     public function findAmenitiesByPropertyId(int $propertyId)
     {
         $qb = $this->createQueryBuilder('p')
