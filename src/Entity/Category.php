@@ -7,19 +7,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-class Amenity
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['amenity'])]
+    #[Groups(['property'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['amenity'])]
+    #[Groups(['property'])]
     private ?string $name = null;
-
 
     // Getters et setters
     public function getId(): ?int
@@ -37,5 +36,5 @@ class Amenity
         $this->name = $name;
         return $this;
     }
-
 }
+

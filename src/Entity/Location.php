@@ -2,36 +2,46 @@
 
 namespace App\Entity;
 
-use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: AddressRepository::class)]
-class Address
+#[ORM\Entity]
+class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['location'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['location'])]
     private ?string $address = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['location'])]
     private ?string $city = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['location'])]
     private ?string $country = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 8)]
+    #[Assert\NotBlank]
+    #[Groups(['location'])]
     private ?float $latitude = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 11, scale: 8)]
+    #[Assert\NotBlank]
+    #[Groups(['location'])]
     private ?float $longitude = null;
 
-    #[ORM\OneToOne(inversedBy: 'location', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Property $property = null;
 
+    // Getters et setters
     public function getId(): ?int
     {
         return $this->id;
@@ -42,10 +52,9 @@ class Address
         return $this->address;
     }
 
-    public function setAddress(string $address): static
+    public function setAddress(string $address): self
     {
         $this->address = $address;
-
         return $this;
     }
 
@@ -54,10 +63,9 @@ class Address
         return $this->city;
     }
 
-    public function setCity(string $city): static
+    public function setCity(string $city): self
     {
         $this->city = $city;
-
         return $this;
     }
 
@@ -66,10 +74,9 @@ class Address
         return $this->country;
     }
 
-    public function setCountry(string $country): static
+    public function setCountry(string $country): self
     {
         $this->country = $country;
-
         return $this;
     }
 
@@ -78,10 +85,9 @@ class Address
         return $this->latitude;
     }
 
-    public function setLatitude(float $latitude): static
+    public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
-
         return $this;
     }
 
@@ -90,22 +96,10 @@ class Address
         return $this->longitude;
     }
 
-    public function setLongitude(float $longitude): static
+    public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;
-
         return $this;
     }
 
-    public function getProperty(): ?Property
-    {
-        return $this->property;
-    }
-
-    public function setProperty(Property $property): static
-    {
-        $this->property = $property;
-
-        return $this;
-    }
 }
