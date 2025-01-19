@@ -2,20 +2,26 @@
 
 namespace App\Entity;
 
-use App\Repository\TestRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: TestRepository::class)]
-class Test
+#[ORM\Entity]
+class Amenity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
+    #[Groups(['amenity'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['amenity'])]
     private ?string $name = null;
 
+
+    // Getters et setters
     public function getId(): ?int
     {
         return $this->id;
@@ -29,7 +35,7 @@ class Test
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
+
 }
