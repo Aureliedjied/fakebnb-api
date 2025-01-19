@@ -18,7 +18,7 @@ class PropertyFixtures extends Fixture
 
         // Créer des catégories
         $categoriesList = [];
-        $categoriesNames = ['Appartement', 'Villa', 'Bungalow', 'Chambre'];
+        $categoriesNames = ['Appartement', 'Villa', 'Bungalow', 'Chambre', 'Chez l\'habitant'];
         foreach ($categoriesNames as $categoryName) {
             $category = new Category();
             $category->setName($categoryName);

@@ -12,12 +12,12 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['property'])]
+    #[Groups(['category'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['property'])]
+    #[Groups(['category'])]
     private ?string $name = null;
 
     // Getters et setters
