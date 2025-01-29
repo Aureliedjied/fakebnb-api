@@ -41,6 +41,8 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     # Installation d'APCu
     && pecl install apcu \
     && docker-php-ext-enable apcu \
+    # Activer le module mod_rewrite
+    && a2enmod rewrite \
     # Nettoyage
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
