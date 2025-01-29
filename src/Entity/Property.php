@@ -29,13 +29,11 @@ class Property
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9-]+(?:-[a-z0-9-]*)$/', message: 'slug invalid')]
-    #[Groups(['property'])]
     private ?string $slug = null;
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank(message: 'La description ne peut pas être vide.')]
     #[Assert\Length(min: 15)]
-    #[Groups(['property'])]
     #[BanWord()]
     private ?string $description = null;
 

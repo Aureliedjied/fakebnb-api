@@ -20,10 +20,10 @@ class Category
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['category'])]
+    #[Groups(['category', 'property'])]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9-]+(?:-[a-z0-9-]*)$/', message: 'slug invalid')]
     #[Groups(['category'])]

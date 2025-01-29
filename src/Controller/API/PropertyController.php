@@ -29,10 +29,17 @@ class PropertyController extends AbstractController
     }
 
     #[Route('/properties', methods: ['GET'])]
-    public function getProperties(): JsonResponse
+    public function getProperties(Request $request): JsonResponse
     {
-        $properties = $this->propertyRepository->findAll();
-        return $this->json($properties, 200, [], ['groups' => 'property']);
+        $page = $request->query->getInt('page', 1);
+        $limit = 10;
+        $properties = $this->propertyRepository->paginateProperties($page, $limit);
+        $maxPage = ceil($properties->count() / $limit);
+        return $this->json([
+            'properties' => $properties,
+            'maxPage' => $maxPage,
+            'currentPage' => $page
+        ], 200, [], ['groups' => 'property']);
     }
 
     #[Route('/properties/{slug}-{id}', methods: ['GET'])]

@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Property;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Property>
@@ -34,6 +36,17 @@ class PropertyRepository extends ServiceEntityRepository
             ->setParameter('id', $propertyId);
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function paginateProperties(int $page, int $limit): Paginator
+    {
+        return new Paginator($this
+            ->createQueryBuilder('p')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->setHint(Paginator::HINT_ENABLE_DISTINCT, false)
+        );
     }
 
 }

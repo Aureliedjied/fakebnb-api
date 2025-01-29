@@ -19,7 +19,7 @@ class Amenity
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['amenity'])]
+    #[Groups(['amenity', 'property'])]
     private ?string $name = null;
 
 
