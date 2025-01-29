@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api')]
 class LocationController extends AbstractController
 {
     private $locationRepository;
@@ -22,7 +23,7 @@ class LocationController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/locations', methods: ['GET'])]
+    #[Route('/locations', methods: ['GET'])]
     public function getLocations(): JsonResponse
     {
         $locations = $this->locationRepository->findAll();
@@ -39,7 +40,7 @@ class LocationController extends AbstractController
         return $this->json($location, 200, [], ['groups' => 'location']);
     }
 
-    #[Route('/api/locations', methods: ['POST'])]
+    #[Route('/locations', methods: ['POST'])]
     public function createLocation(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -57,7 +58,7 @@ class LocationController extends AbstractController
         return new JsonResponse(['status' => 'Location created'], 201);
     }
 
-    #[Route('/api/locations/{id}', methods: ['PUT'])]
+    #[Route('/locations/{id}', methods: ['PUT'])]
     public function editLocation(int $id, Request $request): JsonResponse
     {
         $location = $this->locationRepository->find($id);
@@ -89,7 +90,7 @@ class LocationController extends AbstractController
         return new JsonResponse(['status' => 'Location updated'], 200);
     }
 
-    #[Route('/api/locations/{id}', methods: ['DELETE'])]
+    #[Route('/locations/{id}', methods: ['DELETE'])]
     public function deleteLocation(int $id): JsonResponse
     {
         $location = $this->locationRepository->find($id);

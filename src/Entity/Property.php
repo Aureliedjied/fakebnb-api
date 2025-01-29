@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Location;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PropertyRepository;
+use App\Validator\BanWord;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,6 +23,7 @@ class Property
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\Length(min: 5)]
     #[Groups(['property'])]
+    #[BanWord()]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -34,6 +36,7 @@ class Property
     #[Assert\NotBlank(message: 'La description ne peut pas être vide.')]
     #[Assert\Length(min: 15)]
     #[Groups(['property'])]
+    #[BanWord()]
     private ?string $description = null;
 
     #[ORM\Column]

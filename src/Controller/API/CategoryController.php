@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[Route('/api')]
 class CategoryController extends AbstractController
 {
 
@@ -23,14 +24,14 @@ class CategoryController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/categories', methods: ['GET'])]
+    #[Route('/categories', methods: ['GET'])]
     public function getcategories(): JsonResponse
     {
         $categories = $this->categoryRepository->findAll();
         return $this->json($categories, 200, [], ['groups' => 'category']);
     }
 
-    #[Route('/api/categories/{id}', methods: ['GET'])]
+    #[Route('/categories/{id}', methods: ['GET'])]
     public function getcategory(int $id): JsonResponse
     {
         $category = $this->categoryRepository->find($id);
@@ -40,7 +41,7 @@ class CategoryController extends AbstractController
         return $this->json($category, 200, [], ['groups' => 'category']);
     }
 
-    #[Route('/api/categories', methods: ['POST'])]
+    #[Route('/categories', methods: ['POST'])]
     public function createCategory(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -54,7 +55,7 @@ class CategoryController extends AbstractController
         return $this->json(['status' => 'Category created'], 201);
     }
 
-    #[Route('/api/categories/{id}', methods: ['PUT'])]
+    #[Route('/categories/{id}', methods: ['PUT'])]
     public function editCategory(int $id, Request $request): JsonResponse
     {
         $category = $this->categoryRepository->find($id);
@@ -72,7 +73,7 @@ class CategoryController extends AbstractController
         return $this->json(['status' => 'Category updated'], 200);
     }
 
-    #[Route('/api/categories/{id}', methods: ['DELETE'])]
+    #[Route('/categories/{id}', methods: ['DELETE'])]
     public function deleteCategory(int $id): JsonResponse
     {
         $category = $this->categoryRepository->find($id);

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api')]
 class AmenityController extends AbstractController
 {
     private $amenityRepository;
@@ -21,14 +22,14 @@ class AmenityController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/amenities', methods: ['GET'])]
+    #[Route('/amenities', methods: ['GET'])]
     public function getAmenities(): JsonResponse
     {
         $amenities = $this->amenityRepository->findAll();
         return $this->json($amenities, 200, [], ['groups' => 'amenity']);
     }
 
-    #[Route('/api/amenities/{id}', methods: ['GET'])]
+    #[Route('/amenities/{id}', methods: ['GET'])]
     public function getAmenity(int $id): JsonResponse
     {
         $amenity = $this->amenityRepository->find($id);
@@ -38,7 +39,7 @@ class AmenityController extends AbstractController
         return $this->json($amenity, 200, [], ['groups' => 'amenity']);
     }
 
-    #[Route('/api/amenities', methods: ['POST'])]
+    #[Route('/amenities', methods: ['POST'])]
     public function createAmenity(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -52,7 +53,7 @@ class AmenityController extends AbstractController
         return new JsonResponse(['status' => 'Amenity created'], 201);
     }
 
-    #[Route('/api/amenities/{id}', methods: ['PUT'])]
+    #[Route('/amenities/{id}', methods: ['PUT'])]
     public function editAmenity(int $id, Request $request): JsonResponse
     {
         $amenity = $this->amenityRepository->find($id);
@@ -75,7 +76,7 @@ class AmenityController extends AbstractController
         return new JsonResponse(['status' => 'Amenity updated'], 200);
     }
 
-    #[Route('/api/amenities/{id}', methods: ['DELETE'])]
+    #[Route('/amenities/{id}', methods: ['DELETE'])]
     public function deleteAmenity(int $id): JsonResponse
     {
         $amenity = $this->amenityRepository->find($id);

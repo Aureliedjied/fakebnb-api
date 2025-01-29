@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Repository\PropertyRepository;
 use App\Entity\Property;
 use App\Entity\Location;
@@ -13,25 +14,28 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api')]
 class PropertyController extends AbstractController
 {
     private $propertyRepository;
     private $entityManager;
+    private $validator;
 
-    public function __construct(PropertyRepository $propertyRepository, EntityManagerInterface $entityManager)
+    public function __construct(PropertyRepository $propertyRepository, EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->propertyRepository = $propertyRepository;
         $this->entityManager = $entityManager;
+        $this->validator = $validator;
     }
 
-    #[Route('/api/properties', methods: ['GET'])]
+    #[Route('/properties', methods: ['GET'])]
     public function getProperties(): JsonResponse
     {
         $properties = $this->propertyRepository->findAll();
         return $this->json($properties, 200, [], ['groups' => 'property']);
     }
 
-    #[Route('/api/properties/{slug}-{id}', methods: ['GET'])]
+    #[Route('/properties/{slug}-{id}', methods: ['GET'])]
     public function getProperty(int $id): JsonResponse
     {
         $property = $this->propertyRepository->find($id);
@@ -42,23 +46,28 @@ class PropertyController extends AbstractController
     }
 
 
-    #[Route('/api/properties', methods: ['POST'])]
-    public function createProperty(Request $request): JsonResponse
+    #[Route('/properties', methods: ['POST'])]
+    public function createProperty(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
+    
         $location = new Location();
         $location->setAddress($data['location']['address']);
         $location->setCity($data['location']['city']);
         $location->setCountry($data['location']['country']);
         $location->setLatitude($data['location']['latitude']);
         $location->setLongitude($data['location']['longitude']);
-
+    
+        $locationErrors = $validator->validate($location);
+        if (count($locationErrors) > 0) {
+            return new JsonResponse(['error' => (string) $locationErrors], 400);
+        }
+    
         $category = $this->entityManager->getRepository(Category::class)->find($data['category_id']);
         if (!$category) {
             return new JsonResponse(['error' => 'Category not found'], 404);
         }
-
+    
         $property = new Property();
         $property->setTitle($data['title']);
         $property->setDescription($data['description']);
@@ -68,22 +77,29 @@ class PropertyController extends AbstractController
         $property->setBedrooms($data['bedrooms']);
         $property->setCategory($category);
         $property->setBreakfastIncluded($data['breakfastIncluded']);
-
+    
         foreach ($data['amenities'] as $amenityId) {
             $amenity = $this->entityManager->getRepository(Amenity::class)->find($amenityId);
             if ($amenity) {
                 $property->addAmenity($amenity);
             }
         }
-
+    
+        $propertyErrors = $validator->validate($property);
+        if (count($propertyErrors) > 0) {
+            return new JsonResponse(['error' => (string) $propertyErrors], 400);
+        }
+    
         $this->entityManager->persist($location);
         $this->entityManager->persist($property);
         $this->entityManager->flush();
-
+    
         return new JsonResponse(['status' => 'Property created'], 201);
     }
+    
 
-    #[Route('/api/properties/{id}', methods: ['PUT'])]
+
+    #[Route('/properties/{id}', methods: ['PUT'])]
     public function editProperty(int $id, Request $request): JsonResponse
     {
         $property = $this->propertyRepository->find($id);
@@ -145,7 +161,7 @@ class PropertyController extends AbstractController
         return new JsonResponse(['status' => 'Property updated'], 200);
     }
 
-    #[Route('/api/properties/{id}', methods: ['DELETE'])]
+    #[Route('/properties/{id}', methods: ['DELETE'])]
     public function deleteProperty(int $id): JsonResponse
     {
         $property = $this->propertyRepository->find($id);
